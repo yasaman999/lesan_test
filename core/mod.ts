@@ -1,4 +1,5 @@
 import { lesan, MongoClient, string, number, InRelation, OutRelation, object, ActFn, optional } from "https://deno.land/x/lesan@v0.0.66/mod.ts";
+import ecommerceActs from "../ecommerce/mod.ts"
 const coreApp = lesan();
 const client = new MongoClient();
 await client.connect("mongodb://localhost:27017/arc");
@@ -38,7 +39,6 @@ countryOutRel: Record<string, Inrelation> = {
 const users = coreApp.odm.setModel("user", userPure, userInRel, userOutRel);
 const countries = coreApp.odm.setModel("country", countryPure, countryInRel, countryOutRel);
 
-coreApp.runServer({ port: 8080, typeGeneration: true, playground: false }); // ??
 
 const addUserValidator = () => {
     return object({
@@ -60,3 +60,9 @@ coreApp.acts.setAct({
     validator: addUserValidator,
     fn: addUser
 });
+
+// coreApp.acts.setService("ecommerce", "http://localhost:8585/lesan");
+
+coreApp.acts.setService("ecommerce", ecommerceActs);
+
+coreApp.runServer({ port: 8080, typeGeneration: true, playground: false }); // ??
